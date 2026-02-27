@@ -1,0 +1,14 @@
+concise-planning
+verification-before-completion
+systematic-debugging
+lint-and-validate
+test-driven-development
+python-testing-patterns
+clean-code
+api-design-principles
+architecture-decision-records
+git-advanced-workflows
+using-git-worktrees
+code-review-ai-ai-review
+comprehensive-review-full-review
+context-window-management

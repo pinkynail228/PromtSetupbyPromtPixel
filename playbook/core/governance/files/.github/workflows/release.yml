@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-discipline:
+    name: release-discipline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate release checklist exists
+        run: |
+          test -f docs/ai/release-checklist.md
+          test -f docs/ai/rollback-plan.md

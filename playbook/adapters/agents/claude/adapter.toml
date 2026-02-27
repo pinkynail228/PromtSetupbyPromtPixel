@@ -1,0 +1,5 @@
+id = "claude"
+type = "agent"
+applies_to = ["claude"]
+conflicts_with = []
+copy_map = ["files/CLAUDE.md:CLAUDE.md"]

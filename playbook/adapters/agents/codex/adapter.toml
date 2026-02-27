@@ -1,0 +1,5 @@
+id = "codex"
+type = "agent"
+applies_to = ["codex"]
+conflicts_with = []
+copy_map = ["files/.codex/rules/00-core.md:.codex/rules/00-core.md"]

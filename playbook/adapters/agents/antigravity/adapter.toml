@@ -1,0 +1,8 @@
+id = "antigravity"
+type = "agent"
+applies_to = ["antigravity"]
+conflicts_with = []
+copy_map = [
+  "files/.agent/rules/00-core.md:.agent/rules/00-core.md",
+  "files/.agent/rules/10-curated-skills-policy.md:.agent/rules/10-curated-skills-policy.md"
+]

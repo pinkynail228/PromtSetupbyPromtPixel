@@ -1,0 +1,5 @@
+id = "cursor"
+type = "agent"
+applies_to = ["cursor"]
+conflicts_with = []
+copy_map = ["files/.cursor/rules/00-core.mdc:.cursor/rules/00-core.mdc"]
