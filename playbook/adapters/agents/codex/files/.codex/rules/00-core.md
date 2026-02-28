@@ -3,6 +3,6 @@
 Use project rules in `AGENTS.md`.
 Use execution flow in `docs/ai/Flow.md`.
 
-Serena-first rule:
-- If `docs/ai/serena-workflow.md` exists, follow it before manual codebase exploration.
-- Query Serena memory first; use manual file scans only as fallback.
+Context-first rule:
+- If `docs/ai/context-workflow.md` exists, follow it before broad manual exploration.
+- Use project docs/memories first; use manual deep scans as fallback.

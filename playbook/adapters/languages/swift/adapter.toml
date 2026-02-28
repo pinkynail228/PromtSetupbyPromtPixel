@@ -1,5 +1,3 @@
 id = "swift"
 type = "language"
-applies_to = ["swift"]
-conflicts_with = []
-copy_map = ["files/docs/ai/adapters/language-swift.md:docs/ai/adapters/language-swift.md"]
+description = "Swift language gate defaults and adapter docs"

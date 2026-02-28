@@ -2,10 +2,11 @@
 
 Creates minimal `CLAUDE.md` project memory to point Claude Code to universal project docs.
 
-## Serena-first behavior
+## Behavior
 
-- CLAUDE bridge includes Serena-first instruction for context loading.
+- CLAUDE bridge references project flow and context workflow docs.
+- Favors context artifacts before deep manual exploration.
 
 ## Limitations
 
-- Keep this file short and declarative; source-of-truth remains in `AGENTS.md`.
+- Keep provider-specific logic in this adapter only.

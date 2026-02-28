@@ -1,0 +1,82 @@
+version = 1
+baseline = "core-11"
+source_mode = "local"
+source_ref = "v4.1-baseline"
+updated_at = "2026-02-27"
+
+[[skills]]
+id = "concise-planning"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "systematic-debugging"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "verification-before-completion"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "lint-and-validate"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "test-driven-development"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "clean-code"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "architecture-decision-records"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "code-review-ai-ai-review"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "context-window-management"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "api-design-principles"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"
+
+[[skills]]
+id = "workflow-patterns"
+source = "local"
+ref = "v4.1-baseline"
+checksum = "na"
+license = "internal-template"

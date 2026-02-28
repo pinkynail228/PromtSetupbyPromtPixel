@@ -2,9 +2,9 @@
 
 Describe what this change does and why.
 
-## Serena Context Used
+## Context Evidence Used
 
-List what Serena memories/context were loaded before implementation.
+List what context artifacts were reviewed before implementation (docs, ADRs, memories, prior decisions).
 
 ## Risk
 

@@ -1,4 +1,4 @@
-# Definition Of Done
+# Definition Of Done (Strict)
 
 Machine-checkable checklist. Every item marked `[MANDATORY]` is required.
 
@@ -7,6 +7,6 @@ Machine-checkable checklist. Every item marked `[MANDATORY]` is required.
 - [ ] [MANDATORY] DoD gate passed (`scripts/run-dod-gate.sh`).
 - [ ] [MANDATORY] Tests added or updated for behavior changes.
 - [ ] [MANDATORY] Rollback steps documented in `docs/ai/rollback-plan.md`.
-- [ ] [MANDATORY] PR contains Goal, Serena Context Used, Risk, Test Plan, and Rollback Plan sections.
+- [ ] [MANDATORY] PR contains Goal, Context Evidence Used, Risk, Test Plan, and Rollback Plan sections.
 - [ ] [MANDATORY] Architecture impact assessed; ADR created when needed.
-- [ ] [MANDATORY] Serena memory updated with decisions/checks/pitfalls.
+- [ ] Context records updated with decisions/checks/pitfalls.

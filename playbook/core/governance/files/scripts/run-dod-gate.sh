@@ -31,17 +31,16 @@ check_contains() {
 check_file "docs/ai/definition-of-done.md"
 check_file "docs/ai/rollback-plan.md"
 check_file "docs/ai/architecture/adr/ADR-TEMPLATE.md"
-check_file "docs/ai/serena-workflow.md"
-check_file "docs/ai/serena-memory-policy.md"
+check_file "docs/ai/context-workflow.md"
+check_file "docs/ai/context-memory-policy.md"
 
 if [[ -f "docs/ai/definition-of-done.md" ]]; then
   check_contains "docs/ai/definition-of-done.md" "[MANDATORY]" "DoD has mandatory checklist markers"
-  check_contains "docs/ai/definition-of-done.md" "Serena" "DoD references Serena discipline"
 fi
 
 if [[ -f ".github/PULL_REQUEST_TEMPLATE.md" ]]; then
   check_contains ".github/PULL_REQUEST_TEMPLATE.md" "## Goal" "PR template has Goal section"
-  check_contains ".github/PULL_REQUEST_TEMPLATE.md" "## Serena Context Used" "PR template has Serena Context Used section"
+  check_contains ".github/PULL_REQUEST_TEMPLATE.md" "## Context Evidence Used" "PR template has Context Evidence Used section"
   check_contains ".github/PULL_REQUEST_TEMPLATE.md" "## Risk" "PR template has Risk section"
   check_contains ".github/PULL_REQUEST_TEMPLATE.md" "## Test Plan" "PR template has Test Plan section"
   check_contains ".github/PULL_REQUEST_TEMPLATE.md" "## Rollback Plan" "PR template has Rollback Plan section"
@@ -64,7 +63,7 @@ print((data.get('pull_request') or {}).get('body') or '')
 PY
 )"
 
-        for section in "## Goal" "## Serena Context Used" "## Risk" "## Test Plan" "## Rollback Plan"; do
+        for section in "## Goal" "## Context Evidence Used" "## Risk" "## Test Plan" "## Rollback Plan"; do
           if [[ "$PR_BODY" == *"$section"* ]]; then
             echo "PASS: PR body contains $section"
             PASS=$((PASS + 1))

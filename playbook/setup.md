@@ -1,6 +1,6 @@
-# setup.md — Universal Playbook Bootstrap (Solo-First v3)
+# setup.md - Universal Playbook Bootstrap (v4.1)
 
-Purpose: bootstrap an AI collaboration baseline for any project, language, and runtime, optimized for local commit workflows with Serena-first discipline.
+Purpose: bootstrap an AI collaboration baseline for any project, language, and runtime with low default friction and optional advanced tooling.
 
 ## Design principles
 
@@ -8,10 +8,10 @@ Purpose: bootstrap an AI collaboration baseline for any project, language, and r
 - `Adapter-based`: add agent and language behavior only when explicitly selected.
 - `Template-only`: this repository is a reusable template, not a runtime workspace.
 - `Manual global personalization`: global user settings are never edited automatically.
-- `Solo-first default`: bootstrap defaults to local-gates workflow without mandatory PR overhead.
-- `Strict opt-in`: GitHub PR/protection discipline is available with explicit mode.
-- `Serena default-on`: Serena install starts by default unless explicitly disabled.
-- `Serena-first`: context discovery must start from Serena memory/workflow before broad manual codebase exploration.
+- `Solo-first default`: local gates workflow with no mandatory PR process.
+- `Strict opt-in`: GitHub PR/protection discipline when explicitly enabled.
+- `Tool-agnostic core`: Serena/Codex are optional tooling, not baseline requirements.
+- `Vendored skills baseline`: project-local skills are copied from this repository.
 
 ## Playbook layout
 
@@ -26,20 +26,23 @@ playbook/
 │  └─ templates/
 │     ├─ plan.md
 │     ├─ report.md
+│     ├─ context-provider-guide.md
 │     └─ global-personalization.md
 ├─ adapters/
-│  ├─ agents/{codex, claude, cursor, antigravity}
-│  └─ languages/{python, swift, _template}
-├─ curation/
-│  ├─ students-core.txt
-│  ├─ pro-core.txt
-│  └─ check-profile.sh
-└─ scripts/
-   ├─ bootstrap.sh
-   ├─ install-serena-mcp.sh
-   ├─ github/{apply,verify}-branch-protection.sh
-   ├─ validate-playbook.sh
-   └─ lib/state.sh
+│  ├─ agents/{codex,claude,cursor,antigravity}
+│  ├─ languages/{python,swift,_template}
+│  └─ tooling/serena         # optional tooling pack
+├─ skills/
+│  ├─ core/<skill-id>/SKILL.md
+│  ├─ skills.lock.toml
+│  └─ NOTICE.md
+├─ scripts/
+│  ├─ bootstrap.sh
+│  ├─ install-serena-mcp.sh
+│  ├─ skills/{install-vendored-skills,refresh-vendored-skills}.sh
+│  ├─ github/{apply,verify}-branch-protection.sh
+│  └─ validate-playbook.sh
+└─ reports/
 ```
 
 ## Mode matrix
@@ -51,175 +54,118 @@ playbook/
 
 ## Mode vs governance precedence
 
-1. `--mode` computes default governance:
+1. `--mode` computes default governance.
 2. `solo -> off`
 3. `strict -> required`
 4. Explicit `--governance` overrides mode-derived default.
 
-Examples:
+## Bootstrap CLI
 
 ```bash
-# mode-driven
-./playbook/scripts/bootstrap.sh --target /abs/project --mode strict
-
-# explicit override
-./playbook/scripts/bootstrap.sh --target /abs/project --mode strict --governance off
-```
-
-## Bootstrap lifecycle
-
-`bootstrap.sh` executes a stateful step-machine and writes state to:
-
-- default: `<target>/.playbook-bootstrap.state`
-- custom: `--state-file <path>`
-
-Step order:
-
-1. Core files
-2. Governance files (`solo` or `strict` pack based on effective governance)
-3. Adapters and profile files
-4. Selection manifest (`mode` + `effective_governance`)
-5. GitHub protection attempt (strict mode only when repo/gh available)
-6. Global personalization guide (manual step)
-7. Serena install (default-on)
-8. Codex MCP registration for Serena (default mode: `required`)
-9. Serena command-shape verification
-
-## CLI
-
-```bash
-# default: mode=solo, governance=off
 ./playbook/scripts/bootstrap.sh \
   --target /absolute/path/to/new-project \
   --agent codex \
-  --language swift \
-  --profile students
+  --language python
+```
 
-# strict mode
+Strict example:
+
+```bash
 ./playbook/scripts/bootstrap.sh \
   --target /absolute/path/to/new-project \
   --mode strict \
+  --agent antigravity \
+  --language swift \
   --github-repo owner/repo
+```
+
+Optional tooling example:
+
+```bash
+./playbook/scripts/bootstrap.sh \
+  --target /absolute/path/to/new-project \
+  --with-serena \
+  --with-codex-mcp
 ```
 
 Important flags:
 
-- `--mode <solo|strict>`: workflow mode (`solo` default)
-- `--governance <required|off>`: explicit governance override
-- `--resume`: continue from state file after a blocked run
-- `--state-file <path>`: custom state file location
-- `--force-restart`: delete state and start from scratch
-- `--github-repo <owner/repo>`: optional branch protection auto-apply target in strict mode
-- `--no-serena`: skip Serena install and MCP registration
-- `--serena-codex-mcp <required|off>`: MCP registration mode
+- `--skills <vendored|off>`: vendored skills install mode (`vendored` default)
+- `--skills-path <path>`: install destination for project-local skills (default: `<target>/.agent/skills`)
+- `--with-serena`: run optional Serena installation
+- `--with-codex-mcp`: optional Codex MCP registration (requires `--with-serena`)
+- `--tooling-strict`: make optional tooling failures blocking
 
-## Governance packs
+## Bootstrap lifecycle
 
-### Solo pack (`governance=off`)
+`bootstrap.sh` runs a linear pipeline:
 
-- local-first artifacts only
-- no mandatory `.github/workflows` or PR template
-- includes:
-  - `scripts/run-quality-gates.sh`
-  - `scripts/run-security-gates.sh`
-  - `scripts/run-dod-gate.sh`
-  - `scripts/commit-ready.sh`
-  - `scripts/project-readiness-check.sh`
-  - Serena workflow/memory policy docs
+1. Copy core files.
+2. Apply governance pack (`solo` or `strict`).
+3. Apply selected agent/language adapters.
+4. Install vendored skills (default path: `.agent/skills`).
+5. Optionally apply strict GitHub protection (if `--github-repo` + `gh auth`).
+6. Create `docs/ai/global-personalization.md`.
+7. Optionally run Serena tooling (`--with-serena`, `--with-codex-mcp`).
+8. Print post-bootstrap TODOs.
 
-### Strict pack (`governance=required`)
+## Vendored skills policy
 
-- full GitHub-oriented set (`.github/*`, protection checklist, verify/apply scripts)
-- includes all solo gate/readiness scripts plus PR/protection discipline
+- Skills are stored in `playbook/skills/core`.
+- They are copied into each target project by default.
+- Lock metadata is stored in `playbook/skills/skills.lock.toml`.
+- Refresh is manual via:
 
-## Daily workflow (solo or strict)
+```bash
+./playbook/scripts/skills/refresh-vendored-skills.sh \
+  --manifest ./playbook/skills/skills.lock.toml \
+  --source local \
+  --ref v4.1-baseline
+```
 
-1. Run task with Serena-first context protocol.
-2. Before commit run:
+## Readiness behavior
+
+`bash scripts/project-readiness-check.sh` returns:
+
+- `FAIL` (`exit 1`) for critical missing files/executables.
+- `PASS with warnings` (`exit 0`) for non-critical gaps.
+- `FAIL(strict warnings)` (`exit 2`) when `--strict` is used and warnings exist.
+
+Warnings include examples like:
+
+- missing `docs/ai/global-personalization.done`
+- optional Serena tooling not configured
+- branch protection not verifiable in strict context
+
+## Daily workflow
+
+1. Run task using project flow and context workflow.
+2. Before commit:
 
 ```bash
 bash scripts/commit-ready.sh
 ```
 
-3. Periodically run readiness:
+3. Periodically:
 
 ```bash
 bash scripts/project-readiness-check.sh
-```
-
-## Manual global personalization (required)
-
-Bootstrap always creates:
-
-- `docs/ai/global-personalization.md`
-
-You must complete this guide before first implementation task and create:
-
-- `docs/ai/global-personalization.done`
-
-## Serena lifecycle
-
-By default, bootstrap runs:
-
-1. `uv tool install "git+https://github.com/oraios/serena"`
-2. Serena availability verification
-3. `codex mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context codex`
-4. `codex mcp get serena` command-shape verification (`--context codex`, no `--project`)
-
-If Serena step fails, bootstrap exits with code `20`, writes `STATUS=blocked` to state, and prints exact resume command.
-
-Resume:
-
-```bash
-./playbook/scripts/bootstrap.sh --target /absolute/path/to/new-project --resume
-```
-
-`--no-serena` is allowed for bootstrap, but readiness remains FAIL until Serena MCP is configured.
-
-## Readiness behavior
-
-`scripts/project-readiness-check.sh` always enforces:
-
-- core docs and local gate scripts
-- Serena workflow docs
-- `docs/ai/global-personalization.done`
-- Serena MCP command shape
-
-Strict-only branch protection enforcement:
-
-- activated only when strict context is detected (for example `.github/workflows/ci.yml` present or `--repo` passed)
-- skipped in solo projects by default
-
-## On-demand skills
-
-This template does not vendor skills.
-Install and validate on demand:
-
-```bash
-npx antigravity-awesome-skills --path ~/.agent/skills
-./playbook/curation/check-profile.sh students-core --skills-root ~/.agent/skills
+# or strict interpretation
+bash scripts/project-readiness-check.sh --strict
 ```
 
 ## Validation
 
 ```bash
-# Full regression
-./playbook/scripts/validate-playbook.sh
-
-# Fast checks
 ./playbook/scripts/validate-playbook.sh --smoke
-
-# Skip URL checks
 ./playbook/scripts/validate-playbook.sh --no-links
+./playbook/scripts/validate-playbook.sh
 ```
 
 ## External references
 
 - OpenAI Codex docs: `https://developers.openai.com/codex`
 - OpenAI Codex AGENTS.md guide: `https://developers.openai.com/codex/guides/agents-md`
-- OpenAI Codex config reference: `https://developers.openai.com/codex/config-reference`
-- OpenAI Codex rules: `https://developers.openai.com/codex/rules`
 - Cursor rules docs: `https://cursor.com/docs/context/rules`
-- Cursor CLI rules loading: `https://cursor.com/docs/cli/using`
 - Antigravity docs: `https://antigravity.google/docs/home`
 - Serena repository: `https://github.com/oraios/serena`

@@ -1,5 +1,3 @@
-id = "template"
+id = "language-template"
 type = "language"
-applies_to = ["<language-id>"]
-conflicts_with = []
-copy_map = ["files/docs/ai/adapters/language-<language-id>.md:docs/ai/adapters/language-<language-id>.md"]
+description = "Template for creating a new language adapter"

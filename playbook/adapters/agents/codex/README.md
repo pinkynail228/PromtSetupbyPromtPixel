@@ -2,10 +2,11 @@
 
 Adds Codex-specific optional rules while keeping `AGENTS.md` as the primary source.
 
-## Serena-first behavior
+## Behavior
 
-- Codex rule bridge instructs the model to use Serena workflow before manual deep repository exploration.
+- Codex bridge follows project flow and context workflow if present.
+- Manual deep scanning is fallback when project context records are insufficient.
 
 ## Limitations
 
-- Codex already works with root `AGENTS.md`; this adapter is optional.
+- Codex already reads root `AGENTS.md`; this adapter is optional.

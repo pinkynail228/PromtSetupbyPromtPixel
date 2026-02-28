@@ -6,6 +6,6 @@ Follow AGENTS.md in project root.
 Use docs/ai/Flow.md for execution lifecycle.
 Use docs/ai/templates/plan.md and docs/ai/templates/report.md for task docs.
 
-Serena-first rule:
-- If docs/ai/serena-workflow.md exists, execute that workflow first.
-- Use Serena memory before broad manual repository exploration.
+Context-first rule:
+- If docs/ai/context-workflow.md exists, execute that workflow first.
+- Use context records before broad manual repository exploration.

@@ -10,4 +10,4 @@ Skeleton adapter to create a new language-specific drop-in package.
 
 ## Notes
 
-- Replace placeholder gate commands (`__REQUIRED__`) before first PR.
+- Defaults are `skip`; replace with real commands before relying on strict gates.

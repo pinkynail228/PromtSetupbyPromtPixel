@@ -2,9 +2,10 @@
 
 Adds `.cursor/rules` bridge so Cursor consistently uses universal project docs.
 
-## Serena-first behavior
+## Behavior
 
-- Cursor rule bridge instructs the model to use Serena memory/workflow before broad manual code scanning.
+- Cursor bridge points to `AGENTS.md`, `Flow.md`, and context workflow docs.
+- Repository-wide manual scans are fallback after context loading.
 
 ## Limitations
 

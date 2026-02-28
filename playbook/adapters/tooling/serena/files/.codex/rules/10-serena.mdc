@@ -1,0 +1,4 @@
+# Optional Serena bridge
+
+If Serena is configured for this environment, use Serena context before broad manual scans.
+If Serena is unavailable, proceed with repository docs and targeted searches.

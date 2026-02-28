@@ -2,8 +2,8 @@
 @../../AGENTS.md
 @../../docs/ai/Flow.md
 
-# Serena-first requirement
-@../../docs/ai/serena-workflow.md
+Context-first rule:
+@../../docs/ai/context-workflow.md
 
-Use Serena memory as primary context source.
+Use available project context artifacts first.
 Manual repository deep scan is fallback-only.

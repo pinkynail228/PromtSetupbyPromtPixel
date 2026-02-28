@@ -1,5 +1,3 @@
 id = "python"
 type = "language"
-applies_to = ["python"]
-conflicts_with = []
-copy_map = ["files/docs/ai/adapters/language-python.md:docs/ai/adapters/language-python.md"]
+description = "Python language gate defaults and adapter docs"

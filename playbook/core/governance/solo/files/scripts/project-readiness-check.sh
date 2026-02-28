@@ -2,12 +2,13 @@
 set -euo pipefail
 
 REPO=""
+STRICT_MODE=0
 STRICT_CONTEXT=0
 
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/project-readiness-check.sh [--repo <owner/repo>] [--help]
+  scripts/project-readiness-check.sh [--repo <owner/repo>] [--strict] [--help]
 USAGE
 }
 
@@ -16,6 +17,10 @@ while [[ $# -gt 0 ]]; do
     --repo)
       REPO="${2:-}"
       shift 2
+      ;;
+    --strict)
+      STRICT_MODE=1
+      shift
       ;;
     -h|--help)
       usage
@@ -30,11 +35,17 @@ while [[ $# -gt 0 ]]; do
 done
 
 PASS=0
+WARN=0
 FAIL=0
 
 pass() {
   echo "PASS: $1"
   PASS=$((PASS + 1))
+}
+
+warn() {
+  echo "WARN: $1"
+  WARN=$((WARN + 1))
 }
 
 fail() {
@@ -48,6 +59,17 @@ require_file() {
     pass "file exists -> $path"
   else
     fail "missing file -> $path"
+  fi
+}
+
+require_executable() {
+  local path="$1"
+  if [[ -x "$path" ]]; then
+    pass "executable -> $path"
+  elif [[ -f "$path" ]]; then
+    fail "file exists but is not executable -> $path"
+  else
+    fail "missing executable -> $path"
   fi
 }
 
@@ -66,29 +88,30 @@ extract_repo_from_origin() {
   return 1
 }
 
-check_serena_mcp() {
+check_optional_serena() {
+  local out
+
   if ! command -v codex >/dev/null 2>&1; then
-    fail "codex CLI is required for Serena MCP verification"
+    warn "codex CLI not found; Serena MCP verification skipped"
     return
   fi
 
-  local out
   if ! out="$(codex mcp get serena 2>/dev/null)"; then
-    fail "Serena MCP is not registered in Codex"
+    warn "Serena MCP not registered in Codex (optional in default readiness)"
     return
   fi
 
   if [[ "$out" != *"--context codex"* ]]; then
-    fail "Serena MCP command must include '--context codex'"
+    warn "Serena MCP command shape should include '--context codex'"
     return
   fi
 
   if [[ "$out" == *"--project"* ]]; then
-    fail "Serena MCP command must be global and must not include '--project'"
+    warn "Serena MCP command should be global and omit '--project'"
     return
   fi
 
-  pass "Serena MCP is registered with required command shape"
+  pass "optional Serena MCP registration is valid"
 }
 
 require_file "AGENTS.md"
@@ -97,18 +120,19 @@ require_file "docs/ai/definition-of-done.md"
 require_file "docs/ai/architecture/adr/ADR-TEMPLATE.md"
 require_file "docs/ai/release-checklist.md"
 require_file "docs/ai/rollback-plan.md"
-require_file "docs/ai/serena-workflow.md"
-require_file "docs/ai/serena-memory-policy.md"
-require_file "scripts/run-quality-gates.sh"
-require_file "scripts/run-security-gates.sh"
-require_file "scripts/run-dod-gate.sh"
-require_file "scripts/commit-ready.sh"
+require_file "docs/ai/context-workflow.md"
+require_file "docs/ai/context-memory-policy.md"
 require_file "docs/ai/global-personalization.md"
 
+require_executable "scripts/run-quality-gates.sh"
+require_executable "scripts/run-security-gates.sh"
+require_executable "scripts/run-dod-gate.sh"
+require_executable "scripts/commit-ready.sh"
+
 if [[ -f "docs/ai/global-personalization.done" ]]; then
-  pass "global personalization completion file exists"
+  pass "global personalization completion marker exists"
 else
-  fail "missing docs/ai/global-personalization.done (complete manual global setup)"
+  warn "missing docs/ai/global-personalization.done (manual global setup not acknowledged)"
 fi
 
 if [[ -f ".github/workflows/ci.yml" || -f ".github/PULL_REQUEST_TEMPLATE.md" || -n "$REPO" ]]; then
@@ -121,28 +145,38 @@ if [[ "$STRICT_CONTEXT" -eq 1 ]]; then
   fi
 
   if [[ -z "$REPO" ]]; then
-    fail "strict project requires GitHub repo for branch protection verification (pass --repo or set origin)"
+    warn "strict context detected but GitHub repo is unknown (pass --repo or set origin)"
   elif [[ -x "scripts/github/verify-branch-protection.sh" ]]; then
-    if scripts/github/verify-branch-protection.sh --repo "$REPO" >/dev/null; then
-      pass "branch protection is configured for $REPO"
+    if scripts/github/verify-branch-protection.sh --repo "$REPO" >/dev/null 2>&1; then
+      pass "branch protection verified for $REPO"
     else
-      fail "branch protection verification failed for $REPO"
+      warn "branch protection verification failed for $REPO"
     fi
   else
-    fail "missing scripts/github/verify-branch-protection.sh"
+    warn "missing scripts/github/verify-branch-protection.sh in strict context"
   fi
 else
   echo "INFO: solo project context detected; branch protection check skipped"
 fi
 
-check_serena_mcp
+check_optional_serena
 
+echo ""
 if [[ "$FAIL" -gt 0 ]]; then
-  echo ""
-  echo "Project readiness: FAIL (pass=$PASS fail=$FAIL)"
+  echo "Project readiness: FAIL (pass=$PASS warn=$WARN fail=$FAIL)"
   echo "Action: resolve FAIL items, then re-run scripts/project-readiness-check.sh"
   exit 1
 fi
 
-echo ""
-echo "Project readiness: PASS (pass=$PASS fail=$FAIL)"
+if [[ "$WARN" -gt 0 ]]; then
+  if [[ "$STRICT_MODE" -eq 1 ]]; then
+    echo "Project readiness: FAIL(strict warnings) (pass=$PASS warn=$WARN fail=$FAIL)"
+    echo "Action: resolve WARN items for strict readiness."
+    exit 2
+  fi
+  echo "Project readiness: PASS with warnings (pass=$PASS warn=$WARN fail=$FAIL)"
+  echo "Action: resolve WARN items to reach strict readiness."
+  exit 0
+fi
+
+echo "Project readiness: PASS (pass=$PASS warn=$WARN fail=$FAIL)"

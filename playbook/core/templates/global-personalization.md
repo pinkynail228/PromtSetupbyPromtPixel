@@ -1,6 +1,6 @@
 # Global Personalization (Manual Guided Step)
 
-Complete this file before the first implementation task in a new project.
+Complete this file before major implementation work in a new project.
 
 ## Global Engineering Principles (copy baseline)
 
@@ -10,57 +10,41 @@ Use these principles in every assistant:
 2. Verify behavior with targeted checks before broad checks.
 3. Distinguish facts from assumptions explicitly.
 4. Keep architecture boundaries and avoid opportunistic refactors.
-5. Report what was changed, what was verified, and what risks remain.
-6. Use Serena-first context workflow to reduce rediscovery and token waste.
+5. Report what changed, what was verified, and what risks remain.
+6. Use available context systems before deep manual repository scanning.
 
-## Codex Global Setup (manual)
+## Codex global setup (manual)
 
-### 1) Global instructions file
-
-Create or update `~/.codex/AGENTS.md` with your personal coding standards.
-
-### 2) Global config snippet
-
-Add this snippet to `~/.codex/config.toml`:
+1. Create/update `~/.codex/AGENTS.md` with your global coding standards.
+2. Optional config snippet for `~/.codex/config.toml`:
 
 ```toml
 model_instructions_file = "~/.codex/AGENTS.md"
 project_doc_fallback_filenames = ["AGENTS.md"]
 ```
 
-### 3) Codex global rule addition
+## Cursor global setup (manual)
 
-Add explicit Serena-first instruction to `~/.codex/AGENTS.md`:
-
-- "Before broad manual codebase reading, use Serena project activation and memory lookup."
-
-## Cursor Global Setup (manual)
-
-1. Open Cursor settings.
+1. Open Settings.
 2. Go to **Rules and Memories**.
-3. Update **User Rules** using the same engineering principles above.
-4. Add an explicit Serena-first sentence in User Rules.
-5. Keep project-specific behavior in repository-level rules only.
+3. Update **User Rules** with the engineering principles above.
 
-## Antigravity Global Setup (manual)
+## Antigravity global setup (manual)
 
-1. Open global rules/customization in Antigravity.
+1. Open global rules/customization.
 2. Add the same engineering principles as global defaults.
-3. Add an explicit Serena-first sentence in global rules/skills policy.
-4. Keep project-specific rules in workspace-level `.agent/rules/*`.
-5. Keep skills curated and enable advanced/offensive skills only with explicit approval.
+3. Keep project-specific rules in workspace-level `.agent/rules/*`.
 
-## Completion Checklist
+## Completion checklist
 
-- [ ] Codex global file updated (`~/.codex/AGENTS.md`)
-- [ ] Codex config updated (`~/.codex/config.toml`)
-- [ ] Cursor User Rules updated
-- [ ] Antigravity global rules updated
-- [ ] Serena-first instruction added to all global tools
+- [ ] Codex global file reviewed (if Codex is used)
+- [ ] Cursor user rules reviewed (if Cursor is used)
+- [ ] Antigravity global rules reviewed (if Antigravity is used)
+- [ ] Global engineering principles aligned across used tools
 
-## Completion marker (required for readiness)
+## Optional completion marker
 
-After completing all checklist items, create:
+Create this file after manual setup if you want readiness checks to stop warning:
 
 - `docs/ai/global-personalization.done`
 
